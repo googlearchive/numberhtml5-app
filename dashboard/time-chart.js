@@ -10,6 +10,7 @@ function TimeChart(options) {
   this.interpolation = options.interpolation || 'linear';
   this.random = options.random || d3.random.normal;
   this.bufferSize = options.bufferSize || N;
+  this.title = options.title;
 
   this._init();
 }
@@ -76,6 +77,11 @@ TimeChart.prototype._init = function() {
       .attr('fill', 'none')
       .attr('stroke-width', 2)
       .attr("d", line);
+
+  var title = svg.append('text')
+      .attr('y', 10)
+      .attr('x', 10)
+      .text(this.title);
 
   this.path = path;
   this.line = line;

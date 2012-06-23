@@ -73,24 +73,22 @@ chart([0, n - 1], [0, 180], "linear", function tick(path, line, data, x) {
 });
 */
 
-var soundChart = new TimeChart({range: [0, 180]});
-var lightChart = new TimeChart({range: [0, 1]});
-var proximityChart = new TimeChart({range: [0, 255]});
+var soundChart = new TimeChart({range: [0, 180], title: 'Sound sensor'});
+var lightChart = new TimeChart({range: [0, 1], title: 'Light sensor'});
+var proximityChart = new TimeChart({range: [0, 255], title: 'Proximity sensor'});
 
-var servo1Chart = new AngleChart();
-var servo2Chart = new AngleChart();
-var servo3Chart = new AngleChart();
+var servo1Chart = new AngleChart({title: 'Servo 1'});
+var servo2Chart = new AngleChart({title: 'Servo 2'});
+var servo3Chart = new AngleChart({title: 'Servo 3'});
 
 var robot = new RobotMock();
 
 robot.addSensorListener('sound', function(data) {
   soundChart.addValue(data.value);
 });
-
 robot.addSensorListener('light', function(data) {
   lightChart.addValue(data.value);
 });
-
 robot.addSensorListener('proximity', function(data) {
   proximityChart.addValue(data.value);
 });

@@ -52,7 +52,7 @@ TimeChart.prototype._init = function() {
       .x(function(d, i) { return x(i); })
       .y(function(d, i) { return y(d); });
 
-  var svg = d3.select("#panel").append("p").append("svg")
+  var svg = d3.select("#container").append("p").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")

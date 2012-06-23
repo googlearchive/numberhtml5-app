@@ -1,9 +1,12 @@
+@font-face {
+  font-family: 'Roboto';
+  src:url(/static/fonts/Roboto-Thin.ttf);
+}
+
 body {
   -webkit-perspective: 1200;
   -webkit-perspective-origin: 50% 50%;
   -webkit-transform-origin: 50% 50%; 
-  background-image: url(/static/img/background.png);
-  background-repeat: no-repeat;
   background-color: black;
   padding: 0; margin:0;
 position: absolute;
@@ -14,10 +17,19 @@ bottom: 0;
 }
 
 
+
+h1 {
+ font-family: 'Roboto';
+ font-size: 2em;
+ padding-left: 10px;
+ color: #33b5e5;
+ border-bottom: solid 5px #33b5e5; 
+}
+
 #panel {
   position: absolute;
   box-shadow: 0px 0px 10px white;
-  top: 50px;
+  top: 100px;
   left: 50px;
   right: 50px;
   bottom: 50px;

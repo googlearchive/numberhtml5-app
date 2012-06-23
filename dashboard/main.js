@@ -77,7 +77,9 @@ var soundChart = new TimeChart({range: [0, 180]});
 var lightChart = new TimeChart({range: [0, 1]});
 var proximityChart = new TimeChart({range: [0, 255]});
 
-//var servo1Chart = new GearChart();
+var servo1Chart = new AngleChart();
+var servo2Chart = new AngleChart();
+var servo3Chart = new AngleChart();
 
 var robot = new RobotMock();
 
@@ -91,4 +93,14 @@ robot.addSensorListener('light', function(data) {
 
 robot.addSensorListener('proximity', function(data) {
   proximityChart.addValue(data.value);
+});
+
+robot.addSensorListener('servo1', function(data) {
+  servo1Chart.setAngle(data.value);
+});
+robot.addSensorListener('servo2', function(data) {
+  servo2Chart.setAngle(data.value);
+});
+robot.addSensorListener('servo3', function(data) {
+  servo3Chart.setAngle(data.value);
 });

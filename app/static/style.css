@@ -1,0 +1,39 @@
+body {
+  -webkit-perspective: 1200;
+  -webkit-perspective-origin: 50% 50%;
+  -webkit-transform-origin: 50% 50%; 
+  background-image: url(/static/img/background.png);
+  background-repeat: no-repeat;
+  background-color: black;
+  padding: 0; margin:0;
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+}
+
+#panel {
+  position: absolute;
+  box-shadow: 0px 0px 10px white;
+  top: 50px;
+  left: 50px;
+  right: 50px;
+  bottom: 50px;
+  -webkit-transition: 0.2s -webkit-transform ease-in-out;
+  background-color: rgba(255,255,255, 0.9);
+  padding: 0; margin:0;
+}
+
+p {
+  margin-left: 100px;
+}
+.x.axis line {
+  shape-rendering: auto;
+}
+
+.line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.5px;
+}

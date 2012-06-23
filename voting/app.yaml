@@ -1,0 +1,11 @@
+application: mindstorms-io12-vote
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /api/.*
+  script: main.py
+
+- url: /
+  static_dir: static

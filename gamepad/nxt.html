@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--
+Copyright 2012 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Author: Renato Mangini (mangini@chromium.org)
+-->
+
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" media="all" href="css/main.css"></link>
+  <title>NXT control demo</title>
+</head>
+<body>
+    <div id="expand" class="expandable">
+      <div id="status"></div>
+      <button class="connectnxt">Connect Lego NXT</button><br/>
+      <button class="closenxt">Close Lego NXT</button><br/>
+<input type="text" id="cmd" style="width: 200px;" value="6,0,0,3,64,31,255,1"></input><br/>
+      <button class="forward">Forward</button><br/>
+      <button class="stop">Stop</button><br/>
+      <button class="readSound">get sound</button><br/>
+      <div class="log"></div>
+    </div>
+  <script src="js/serial.js"></script>
+  <script src="js/nxt.js"></script>
+  <script src="js/gamepad.js"></script>
+</body>
+</html>

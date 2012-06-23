@@ -1,0 +1,17 @@
+{
+  "name": "Lego NXT demo - App",
+  "version": "1.0",
+  "permissions": [
+    "experimental", "appWindow", "usb"
+  ],
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "icons": {
+    "128": "static/img/icon_128.png"
+  },
+  "manifest_version": 2,
+  "offline_enabled": true
+}

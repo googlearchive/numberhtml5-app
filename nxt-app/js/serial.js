@@ -21,6 +21,7 @@ var serial_lib=(function() {
   var connectionInfo;
   var readListener;
   var dataRead;
+  var bytesToRead;
   
   var logObj=function(obj) {
     console.log(obj);
@@ -32,37 +33,55 @@ var serial_lib=(function() {
   
   var startListening=function(callback) {
     if (!connectionInfo || !connectionInfo.connectionId) {
-      throw new "You must call openSerial first!";
+      throw "You must call openSerial first!";
     }
     readListener=callback;
-    dataRead=''; 
-    onCharRead();
+    dataRead=[]; 
+    flush(onRead);
   }
 
-  var onCharRead=function(readInfo) {
+  var flush=function(callback) {
+    chrome.experimental.serial.flush(connectionInfo.connectionId, callback);
+  }
+
+  var printArrayBufferView=function(abv) {
+    var str="";
+    for (var i=0; i<abv.length; i++) {
+      str+=abv[i];
+    }
+    return str;
+  }
+  var onRead=function(readInfo) {
     if (!readListener || !connectionInfo) {
       return;
     }
     if (readInfo && readInfo.bytesRead>0 && readInfo.data) {
-      var str=ab2str(readInfo.data);
-      if (str[str.length-1]==='\n') {
-        dataRead+=str.substring(0, str.length-1);
-        onRead(dataRead);
-        dataRead=""; 
-      } else {
-        dataRead+=str;
+      var abv=new Uint8Array(readInfo.data);
+
+      for (var i=0; i<abv.length; i++) {
+        if (dataRead.length===0) {
+          bytesToRead=abv[0];
+        } else if (dataRead.length===1) {
+          bytesToRead+=abv[0]>>8;
+        } else {
+          bytesToRead--;
+        } 
+        dataRead.push(abv[0]);
+      }
+      
+      if (bytesToRead===0 && dataRead.length>2) {
+        readListener(dataRead);
+        dataRead=[];
+        bytesToRead=0;
+        return;
       }
     }
     
-    setTimeout( function() { chrome.experimental.serial.read(connectionInfo.connectionId, onCharRead)), 200);
+    chrome.experimental.serial.read(connectionInfo.connectionId, onRead);
   }
 
   var getPorts=function(callback) {
     chrome.experimental.serial.getPorts(callback);
-  }
-  
-  var flush=function() {
-    chrome.experimental.serial.flush();
   }
   
   var openSerial=function(serialPort, callback) {
@@ -84,7 +103,6 @@ var serial_lib=(function() {
   
   var writeBytesSerial=function(bytes) {
     var abv=new Uint8Array(bytes);
-console.log("writing uint8array "+abv);
     chrome.experimental.serial.write(connectionInfo.connectionId, abv.buffer, onWrite); 
   }
   
@@ -95,9 +113,6 @@ console.log("writing uint8array "+abv);
   var onWrite=function(obj) {
   }
   
-  var onRead=function(readInfo) {
-    if (readListener) readListener(readInfo);
-  };
 
   /* the arraybuffer is interpreted as an array of UTF-8 (1-byte Unicode chars) */
   var ab2str=function(buf) {
@@ -145,6 +160,7 @@ console.log("writing uint8array "+abv);
     "startListening": startListening,
     "writeBytesSerial": writeBytesSerial,
     "writeSerial": writeSerial,
+    "flush": flush,
     "closeSerial": closeSerial
   }
 })();

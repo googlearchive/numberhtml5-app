@@ -26,7 +26,7 @@ const SENSOR_REFRESH_INTERVAL=200;
   var btnForward=document.querySelector(".forward");
   var logArea=document.querySelector(".log");
   var statusLine=document.querySelector("#status");
-  var readSound=document.querySelector(".readSound");
+  var btnReadSound=document.querySelector(".readSound");
   
   var logObj=function(obj) {
     console.log(obj);
@@ -98,7 +98,10 @@ const SENSOR_REFRESH_INTERVAL=200;
     logSuccess("Device found (connectionId="+cInfo.connectionId+")");
     flipState(false);
     statusLine.textContent="Connected";
-    //serial_lib.startListening(onRead);
+    log("started listener");
+    serial_lib.startListening(function(data) {
+      log("reading "+data);
+    });
   }
   
   var writeSerial=function(bytes) {

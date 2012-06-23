@@ -23,7 +23,7 @@
     speed = 4,
     start = Date.now();
 
-    var svg = d3.select("#panel").insert("svg:svg", "form")
+    var svg = d3.select("#container").insert("svg:svg", "form")
     .attr("width", w)
     .attr("height", h)
     .append("svg:g")

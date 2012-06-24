@@ -7,8 +7,19 @@
   <div id="panel">
     <div id="container"></div>
   </div>
+  <div id="status">
+    <h1>Preflight Checklist</h1>
+    <p class="gamepad status">Gamepad</p>
+    <label for="device">Connect to</label>
+    <select id="devices">
+      <option value="">
+      <option value="/dev/tty.bluetooth-Baily">Bailey
+      <option value="/dev/tty.bluetooth-Jamie">Jamie
+    </select>
+    <p class="robot status">Robot</p>
+  </div>
   <div id="debug" class="expandable">
-      <div id="status"></div>
+      <div id="statusLine"></div>
       <button class="connectnxt">Connect Lego NXT</button><br/>
       <button class="closenxt">Close Lego NXT</button><br/>
 <input type="text" id="cmd" style="width: 200px;" value="6,0,0,3,64,31,255,1"></input><br/>

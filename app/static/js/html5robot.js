@@ -2,8 +2,12 @@ function HTML5Robot() {
   this.robot = Robot; 
   this.callbacks = {}
   this._startPollingSensors();
-
 }
+
+HTML5Robot.prototype.connect = function(device, success) {
+  success = success || function() {};
+  this.robot.connect(device, success);
+};
 
 HTML5Robot.prototype.addSensorListener = function(sensor, callback) {
   this.callbacks[sensor] = callback;
@@ -32,19 +36,19 @@ HTML5Robot.prototype._startPollingSensors = function() {
   // Iterate through all sensor data, firing callbacks if they
   // exist.
   //
-  this.robot.onSensor("sound", function(data, port) {
+  this.robot.onSensor("sound", function(port, data) {
     this._emitSensorData('sound', {value: data});
   });
 
-  this.robot.onSensor("light", function(data) {
+  this.robot.onSensor("light", function(port, data) {
     this._emitSensorData('light', {value: data});
   });
   
-  this.robot.onSensor("proximity", function(data) {
+  this.robot.onSensor("proximity", function(port, data) {
     this._emitSensorData('proximity', {value: data});
   });
 
-  this.robot.onSensor("servo", function(angle, speed, port) {
+  this.robot.onSensor("servo", function(port, angle, speed) {
     this._emitSensorData('servo' + (port + 1), {value: data});
   });
 };

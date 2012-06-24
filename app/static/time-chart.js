@@ -79,6 +79,7 @@ TimeChart.prototype._init = function() {
       .attr("d", line);
 
   var title = svg.append('text')
+      .attr("class", "text")
       .attr('y', 10)
       .attr('x', 10)
       .text(this.title);

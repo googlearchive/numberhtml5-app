@@ -9,14 +9,12 @@ body {
   -webkit-transform-origin: 50% 50%; 
   background-color: black;
   padding: 0; margin:0;
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
-
-
 
 h1 {
  font-family: 'Roboto';
@@ -28,25 +26,33 @@ h1 {
 
 #panel {
   position: absolute;
-  box-shadow: 0px 0px 10px white;
   top: 100px;
   left: 50px;
   right: 50px;
   bottom: 50px;
   -webkit-transition: 0.2s -webkit-transform ease-in-out;
-  background-color: rgba(255,255,255, 0.9);
   padding: 0; margin:0;
 }
 
 p {
-  margin-left: 100px;
+  font-family: 'Roboto';
+  color: white;
 }
 .x.axis line {
   shape-rendering: auto;
 }
 
+.text {
+  stroke: #fff;
+  font-family: 'Roboto';
+}
+
+.gear {
+  stroke: white;
+}
+
 .line {
   fill: none;
-  stroke: #000;
+  stroke: #fff;
   stroke-width: 1.5px;
 }

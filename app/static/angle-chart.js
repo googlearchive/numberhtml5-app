@@ -46,6 +46,7 @@
     .attr('width', 20).attr('height', 120);
 
     var title = svg.append('svg:text')
+        .attr('class', 'text')
         .attr('y', 125)
         .attr('x', -25)
         .text(this.title);

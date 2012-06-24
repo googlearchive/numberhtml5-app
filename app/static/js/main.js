@@ -81,7 +81,7 @@ var servo1Chart = new AngleChart({title: 'Servo 1'});
 var servo2Chart = new AngleChart({title: 'Servo 2'});
 var servo3Chart = new AngleChart({title: 'Servo 3'});
 
-var robot = new RobotMock();
+var robot = new HTML5Robot();
 
 robot.addSensorListener('sound', function(data) {
   soundChart.addValue(data.value);

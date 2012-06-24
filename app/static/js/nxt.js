@@ -50,7 +50,7 @@ window.Robot=(function() {
   var startSensorReader=function() {
     if (!sensorReaderInterval) {
       console.log("starting sensor polling");
-      sensorReaderInterval=window.setInterval(readAllSensors, 1000);
+      sensorReaderInterval=window.setInterval(readAllSensors, 1500);
     } 
   }
   var stopSensorReader=function() {
@@ -62,29 +62,27 @@ window.Robot=(function() {
     readSensor(0);
     readSensor(1);
     readSensor(3);
-    readMotor(0);
+    //readServo(0);
   }
   
   var init=function() {
     if (typeof(serial_lib) === 'undefined') throw "You must include serial.js before";
 
     flipState(true);
-    btnConnectNXT.addEventListener("click", openSerial);
     btnClose.addEventListener("click", closeSerial);
     btnForward.addEventListener("click", forward);
     btnStop.addEventListener("click", stop);
     
     document.querySelector(".read1").addEventListener("click", function() { 
-      // port 0: light - percent of full scale
-      setInputPort(0, 0, 0x80);
-      // port 1: 
-      // port 2: sound - percent of full scale
-      setInputPort(2, 1, 0x80);
-      // port 3: switch - boolean
-      setInputPort(3, 2, 0x20);
-      startSensorReader();
+        // port 0: light - percent of full scale
+        setInputPort(0, 0, 0x80);
+        // port 1: 
+        // port 2: sound - percent of full scale
+        setInputPort(2, 1, 0x80);
+        // port 3: switch - boolean
+        setInputPort(3, 2, 0x20);
+        startSensorReader();
     });
-    initNXTListeners();
   }
 
   var onSensor=function(sensorType, callback) {
@@ -122,9 +120,6 @@ window.Robot=(function() {
   };
 
 
-  var initNXTListeners=function() {
-  }
-  
   var setMotorSpeed=function(motor, speed) {
     var cmd=[0x0c, 0x00, 0x80, 0x04, motor, speed, 0x07, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00];
     log("writing "+cmd);
@@ -160,7 +155,6 @@ window.Robot=(function() {
   }
 
   var flipState=function(deviceLocated) {
-    btnConnectNXT.disabled=!deviceLocated;
     btnClose.disabled=deviceLocated;
   }
   

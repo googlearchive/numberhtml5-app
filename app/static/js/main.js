@@ -6,6 +6,9 @@ var servo1Chart = new AngleChart({title: 'Servo 1'});
 var servo2Chart = new AngleChart({title: 'Servo 2'});
 var servo3Chart = new AngleChart({title: 'Servo 3'});
 
+var switchChart = new SwitchChart({title: 'Switch'});
+
+
 var robot = new HTML5Robot();
 //var robot = new RobotMock();
 
@@ -27,4 +30,8 @@ robot.addSensorListener('servo2', function(data) {
 });
 robot.addSensorListener('servo3', function(data) {
   servo3Chart.setAngle(data.value);
+});
+
+robot.addSensorListener('switch', function(data) {
+  switchChart.setState(data.value); 
 });

@@ -18,7 +18,7 @@ Author: Renato Mangini (mangini@chromium.org)
 
 const SENSOR_REFRESH_INTERVAL=200;
 
-Robot=(function() {
+window.Robot=(function() {
   
   var sensorListeners={};
 
@@ -107,9 +107,6 @@ Robot=(function() {
 
 
   var initNXTListeners=function() {
-    onSensor("servo", function(port, angle, speed) {
-     log("motor "+port+" angle="+angle+" speed="+speed);
-    });
   }
   
   var setMotorSpeed=function(motor, speed) {
@@ -153,7 +150,8 @@ Robot=(function() {
     btnClose.disabled=deviceLocated;
   }
   
-  var serialPort='/dev/tty.bluetooth-Jamie';
+  //var serialPort='/dev/tty.bluetooth-Jamie';
+  var serialPort='/dev/tty.bluetooth-Bailey';
   var openSerial=function() {
     if (!serialPort) {
       logError("Invalid serialPort");

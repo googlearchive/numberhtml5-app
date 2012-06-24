@@ -47,7 +47,6 @@ var read=function(data) {
   } else if (data && data.bytesRead>0) {
     startTime=now;
     var readByte=new Uint8Array(data.data)[0];
-    readData.push(readByte);
     if (state==='idle') {
       expectedBytes=readByte;
       startTime=now;
@@ -56,7 +55,8 @@ var read=function(data) {
       expectedBytes+=readByte<<8;
       changeState('reading');
     } else if (state==='reading') {
-      if (readData.length===expectedBytes+2) {
+      readData.push(readByte);
+      if (readData.length===expectedBytes) {
         var data=readData;
         if (listener) listener(data);
         resetState();

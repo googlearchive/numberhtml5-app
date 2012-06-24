@@ -18,8 +18,10 @@ Author: Renato Mangini (mangini@chromium.org)
 
 const SENSOR_REFRESH_INTERVAL=200;
 
-(function() {
+Robot=(function() {
   
+  var sensorListeners={};
+
   var btnConnectNXT=document.querySelector(".connectnxt");
   var btnClose=document.querySelector(".closenxt");
   var btnStop=document.querySelector(".stop");
@@ -63,7 +65,17 @@ const SENSOR_REFRESH_INTERVAL=200;
     document.querySelector(".read1").addEventListener("click", function() { 
       readSensor(0);
     });
+    document.querySelector(".readservo1").addEventListener("click", function() { 
+      readServo(0);
+    });
     initNXTListeners();
+  }
+
+  var onSensor=function(sensorType, callback) {
+    if (sensorListeners[sensorType]) {
+      throw "Only one listener per sensorType is allowed: "+sensorType;
+    }
+    sensorListeners[sensorType]=callback;
   }
 
   var getBestMode=function(portType) {
@@ -95,6 +107,9 @@ const SENSOR_REFRESH_INTERVAL=200;
 
 
   var initNXTListeners=function() {
+    onSensor("servo", function(port, angle, speed) {
+     log("motor "+port+" angle="+angle+" speed="+speed);
+    });
   }
   
   var setMotorSpeed=function(motor, speed) {
@@ -119,6 +134,12 @@ const SENSOR_REFRESH_INTERVAL=200;
       log("writing "+cmd);
       writeSerial(cmd);
     });
+  }
+
+  var readServo=function(port) {
+    var cmd=[0x03, 0x00, 0x00, 0x06, port];
+    log("writing "+cmd);
+    writeSerial(cmd);
   }
 
   var readSensor=function(port) {
@@ -150,7 +171,37 @@ const SENSOR_REFRESH_INTERVAL=200;
     log("started listener");
     serial_lib.startListening(function(data) {
       log("reading "+data);
+      onSensorRawData(data);
     });
+  }
+
+  var notifySensor=function(sensor, port, value1, value2) {
+    if (sensorListeners[sensor]) {
+      sensorListeners[sensor](port, value1, value2);
+    }
+  }
+
+  var onSensorRawData=function(data) {
+    switch (data[1]) {
+    // setInputMode
+    case 0x05: 
+      break;
+
+    // getOutputState
+    case 0x06: 
+      var portId=data[3];
+      notifySensor("servo", portId, (data[16]<<24)+(data[15]<<16)+(data[14]<<8)+data[13], data[7]);
+      break;
+
+    // getInputValues
+    case 0x07:
+      var portId=data[3];
+      switch (data[6]) {
+        case 0x01: notifySensor("switch", portId, data[12]==1); break;
+        case 0x05: notifySensor("light", portId, data[12]==1); break;
+      }
+      break;
+    }
   }
   
   var writeSerial=function(bytes) {
@@ -178,6 +229,12 @@ const SENSOR_REFRESH_INTERVAL=200;
   }
   
   
-  init();
+  return {
+    "init": init,
+    "setServoSpeed": setMotorSpeed,
+    "onSensor": onSensor
+  }
 })();
+
+Robot.init();
 

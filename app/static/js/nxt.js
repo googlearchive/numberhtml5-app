@@ -27,7 +27,7 @@ window.Robot=(function() {
   var btnStop=document.querySelector(".stop");
   var btnForward=document.querySelector(".forward");
   var logArea=document.querySelector(".log");
-  var statusLine=document.querySelector("#status");
+  var statusLine=document.querySelector("#statusLine");
   
   var logObj=function(obj) {
     console.log(obj);
@@ -165,15 +165,19 @@ window.Robot=(function() {
   }
   
   //var serialPort='/dev/tty.bluetooth-Jamie';
-  var serialPort='/dev/tty.bluetooth-Bailey';
-  var openSerial=function() {
+  //var serialPort='/dev/tty.bluetooth-Bailey';
+  var openSerial=function(serialPort, callback) {
+    var _callback = function(cInfo) {
+      onOpen(cInfo);
+      callback();
+    };
     if (!serialPort) {
       logError("Invalid serialPort");
       return;
     }
     flipState(true);
     log("Connecting to "+serialPort);
-    serial_lib.openSerial(serialPort, onOpen);
+    serial_lib.openSerial(serialPort, _callback);
   }
   
   var onOpen=function(cInfo) {
@@ -183,9 +187,10 @@ window.Robot=(function() {
     log("started listener");
     serial_lib.startListening(function(data) {
       log("reading "+data);
+      
       onSensorRawData(data);
     });
-  }
+  };
 
   var notifySensor=function(sensor, port, value1, value2) {
     if (sensorListeners[sensor]) {
@@ -246,7 +251,8 @@ window.Robot=(function() {
   return {
     "init": init,
     "setServoSpeed": setMotorSpeed,
-    "onSensor": onSensor
+    "onSensor": onSensor,
+    "connect" : openSerial
   }
 })();
 

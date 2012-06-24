@@ -1,4 +1,5 @@
-var Controller = function() {
+var Controller = function(options) {
+
   var frameID;
   var pad;
   var lastV=0;
@@ -6,13 +7,34 @@ var Controller = function() {
   var lastA=0;
   var self = this;
 
-  this.OnVertical = function(e) { console.log("Vertical:" + e);};
-  this.OnHorizontal = function(e) {console.log("Horizontal:" + e);};
-  this.OnArm = function(e) {console.log("Arm:" + e)};
-    
+  options.OnVertical = options.OnVertical || function(e) { console.log("Vertical:" + e);};
+  options.OnHorizontal = options.OnHorizontal || function(e) {console.log("Horizontal:" + e);};
+  options.OnArm = options.OnArm || function(e) {console.log("Arm:" + e)};
+  options.OnDeviceFound = options.OnDeviceFound || function(e) { console.log("Found device: " + e); }; 
+  options.OnDeviceLost = options.OnDeviceLost || function(e) {console.log("Lost Gamepad"); };
+
+  var deviceSnooper = function() {
+    if(!!pad == false) {
+      console.log("Looking for device");
+      pad = window.navigator.webkitGamepads[0];
+      if(pad) {
+        console.log("Found device", pad);
+        options.OnDeviceFound(pad);
+        frameID = window.webkitRequestAnimationFrame(update);
+      }
+      setTimeout(deviceSnooper, 500);
+    }
+  }
+
   var update = function() {
     // Read the state
     pad = window.navigator.webkitGamepads[0];
+    if(!!pad == false) {
+      //Lost pad
+      options.OnDeviceLost();
+      deviceSnooper();      
+      return;
+    }
     var stick1 = [pad.axes[0], pad.axes[1]];
     var stick2 = pad.axes[3];
 
@@ -30,17 +52,17 @@ var Controller = function() {
     if(arm < 10 && arm > -10) arm = 0;
 
     if(Math.abs(lastV - vertical) >10) {
-      self.OnVertical(vertical);
+      options.OnVertical(vertical);
       lastV = vertical;
     }
 
     if(Math.abs(lastH - horizontal) >10) {
-      self.OnHorizontal(horizontal);
+      options.OnHorizontal(horizontal);
       lastH = horizontal;
     }
 
     if(Math.abs(lastA - arm) >10) {
-      self.OnArm(arm);
+      options.OnArm(arm);
       lastA = arm;
     }
 
@@ -67,17 +89,7 @@ var Controller = function() {
     window.addEventListener("webkitgamepaddisconnected", disconnected, false);
   }
   else {
-    var deviceSnooper = function() {
-      if(!!pad == false) {
-        console.log("Looking for device");
-        pad = window.navigator.webkitGamepads[0];
-        if(pad) {
-          console.log("Found device", pad);
-          frameID = window.webkitRequestAnimationFrame(update);
-        }
-        setTimeout(deviceSnooper, 500);
-      }
-    }
+    
 
     deviceSnooper();
   }

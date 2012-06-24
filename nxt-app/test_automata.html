@@ -1,0 +1,55 @@
+<html>
+  <button id="start">start</button><br/>
+  <input type="text" id="bytein"></input><button id="gotbyte">byte in</button><br/>
+  <div>
+  State: <span id="state"></span><br/>
+  Timeout: <span id="timeout"></span><br/>
+  readData: <span id="readData"></span><br/>
+  expectedBytes: <span id="expectedBytes"></span><br/>
+  </div>
+
+<script src="js/reader_automata.js"></script>
+<script>
+
+// debug only:
+const DEBUG=1;
+var readBuffer=-1;
+var byteEl=document.querySelector('#bytein');
+var stateEl=document.querySelector('#state');
+var timeoutEl=document.querySelector('#timeout');
+var readDataEl=document.querySelector('#readData');
+var expectedBytesEl=document.querySelector('#expectedBytes');
+
+document.querySelector('#gotbyte').addEventListener('click', function() {
+  readBuffer=parseInt(byteEl.value);
+});
+
+document.querySelector('#start').addEventListener('click', function() {
+  reader_automata.init(function(data) {
+    console.log("GOT DATA: "+data);
+  }, checkForAvailableData, logState);
+});
+
+var logState=function(state, readData, expectedBytes, timeRemaining) {
+  stateEl.textContent=state;
+  readDataEl.textContent=""+readData;
+  expectedBytesEl.textContent=expectedBytes;
+  if (timeRemaining) timeoutEl.textContent=timeRemaining;
+}
+
+var checkForAvailableData=function(callback) {
+  if (readBuffer!==-1) {
+    window.webkitRequestAnimationFrame(function() {
+      var data=readBuffer;
+      readBuffer=-1;
+      callback({"bytesRead": 1, "data": new Uint8Array([data]).buffer});
+    });
+  } else {
+    window.webkitRequestAnimationFrame(callback);
+  }
+}
+
+
+</script>
+</html>
+

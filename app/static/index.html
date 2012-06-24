@@ -1,12 +1,34 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <link rel="stylesheet" href="/static/style.css" />
+<link rel="stylesheet" href="/static/css/debug.css" />
 <body>
   <h1>Hello Roboto</h1>
   <div id="panel">
     <div id="container"></div>
   </div>
+  <div id="debug" class="expandable">
+      <div id="status"></div>
+      <button class="connectnxt">Connect Lego NXT</button><br/>
+      <button class="closenxt">Close Lego NXT</button><br/>
+<input type="text" id="cmd" style="width: 200px;" value="6,0,0,3,64,31,255,1"></input><br/>
+      <button class="forward">Forward</button><br/>
+      <button class="stop">Stop</button><br/>
+      sensor 1:
+        <input type="radio" name="sensor1" value="1" checked="true">Switch</input>
+        <input type="radio" name="sensor1" value="2">Temperature</input>
+        <input type="radio" name="sensor1" value="3">Reflection</input>
+        <input type="radio" name="sensor1" value="4">Angle</input>
+        <input type="radio" name="sensor1" value="5">Light_active</input>
+        <input type="radio" name="sensor1" value="7">Sound</input>
+      <button class="read1">Read sensor 1</button><br/>
+      <br/>
+      <div class="log"></div>
+  </div>
 </body>
+<script src="js/reader_automata.js"></script>
+<script src="js/serial.js"></script>
+<script src="js/nxt.js"></script>
 <script src="d3.v2.js"></script>
 <script src="time-chart.js"></script>
 <script src="angle-chart.js"></script>

@@ -1,0 +1,54 @@
+.expandable {
+ color: white;
+ 
+ position: absolute;
+ z-index: 2;
+ -webkit-transition: height 0.5s;
+ height: 16px;
+ overflow: hidden;
+ margin:0;
+ background: black;
+ padding: 3px;
+ font-size: 13px;
+ left: 0;
+ right: 0;
+}
+.expandable:hover #status {
+  color: transparent;
+}
+#status {
+ float: left;
+}
+#status.error {
+ color: red;
+}
+#status.on {
+ color: green;
+}
+#handler {
+ float: right;
+}
+.commands {
+  clear: both;
+  padding: 10px;
+}
+
+.expandable:hover {
+ height: 400px;
+ background: -webkit-linear-gradient(#000, #186404);
+}
+
+.log {
+ color: black;
+ width: 100%; 
+ height: 140px;
+ background: white;
+ border: 1px solid #333;
+ overflow: auto;
+ font-size: 12px;
+}
+
+section {
+  padding: 0 10px;
+  color: #666;
+}

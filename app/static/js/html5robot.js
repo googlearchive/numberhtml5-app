@@ -51,6 +51,10 @@ HTML5Robot.prototype._startPollingSensors = function() {
   this.robot.onSensor("servo", function(port, angle, speed) {
     this._emitSensorData('servo' + (port + 1), {value: data});
   });
+
+  this.robot.onSensor("switch", function(port, state) {
+    this._emitSensorData("switch", {value: state});
+  });
 };
 
 HTML5Robot.prototype._emitSensorData = function(sensor, data) {

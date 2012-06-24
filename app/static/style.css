@@ -14,7 +14,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: none;
+  overflow: hidden;
 }
 
 h1 {
@@ -41,6 +41,7 @@ p {
 }
 .x.axis line {
   shape-rendering: auto;
+  stroke: #fff;
 }
 
 .text {
@@ -56,6 +57,10 @@ p {
   fill: none;
   stroke: #fff;
   stroke-width: 1.5px;
+}
+
+.on {
+  fill: red;
 }
 
 #status {
@@ -76,7 +81,7 @@ p {
   background-color: black;
   border-color: #33b5e5;
   font-size: 2em;
-  font-family: 'Roboto';
+ ; font-family: 'Roboto';
   padding: 5px;
   -webkit-appearance: none;
 }

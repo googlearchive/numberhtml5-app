@@ -46,6 +46,24 @@ window.Robot=(function() {
     logArea.innerHTML=msg+"<br/>"+logArea.innerHTML;
   }
   
+  var sensorReaderInterval;
+  var startSensorReader=function() {
+    if (!sensorReaderInterval) {
+      console.log("starting sensor polling");
+      sensorReaderInterval=window.setInterval(readAllSensors, 1000);
+    } 
+  }
+  var stopSensorReader=function() {
+    window.clearInterval(sensorReaderInterval);
+    sensorReaderInterval=null;
+  }
+
+  var readAllSensors=function() {
+    readSensor(0);
+    readSensor(1);
+    readSensor(3);
+    readMotor(0);
+  }
   
   var init=function() {
     if (typeof(serial_lib) === 'undefined') throw "You must include serial.js before";
@@ -56,17 +74,15 @@ window.Robot=(function() {
     btnForward.addEventListener("click", forward);
     btnStop.addEventListener("click", stop);
     
-    addEventToElements('click', "input[type='radio'][name='sensor1']", function() {
-      var portType=parseInt(document.querySelector('input[type="radio"][name="sensor1"][checked="true"]').value);
-      var portMode=getBestMode(portType);
-      setInputPort(0, portType, portMode);
-    });
-
     document.querySelector(".read1").addEventListener("click", function() { 
-      readSensor(0);
-    });
-    document.querySelector(".readservo1").addEventListener("click", function() { 
-      readServo(0);
+      // port 0: light - percent of full scale
+      setInputPort(0, 0, 0x80);
+      // port 1: 
+      // port 2: sound - percent of full scale
+      setInputPort(2, 1, 0x80);
+      // port 3: switch - boolean
+      setInputPort(3, 2, 0x20);
+      startSensorReader();
     });
     initNXTListeners();
   }
@@ -126,11 +142,9 @@ window.Robot=(function() {
   }
 
   var setInputPort=function(port, inputType, inputMode) {
-    serial_lib.flush(function(){
-      var cmd=[0x05, 0x00, 0x00, 0x05, port, inputType, inputMode];
-      log("writing "+cmd);
-      writeSerial(cmd);
-    });
+    var cmd=[0x05, 0x00, 0x00, 0x05, port, inputType, inputMode];
+    log("writing "+cmd);
+    writeSerial(cmd);
   }
 
   var readServo=function(port) {
@@ -197,6 +211,7 @@ window.Robot=(function() {
       switch (data[6]) {
         case 0x01: notifySensor("switch", portId, data[12]==1); break;
         case 0x05: notifySensor("light", portId, data[12]==1); break;
+        case 0x08: notifySensor("sound", portId, data[12]==1); break;
       }
       break;
     }
@@ -219,6 +234,7 @@ window.Robot=(function() {
   }
   
   var closeSerial=function() {
+   stopSensorReader();
    serial_lib.closeSerial(onClose);
   }
   

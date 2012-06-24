@@ -35,7 +35,7 @@ HTML5Robot.prototype._startPollingSensors = function() {
     this._emitSensorData('proximity', {value: data});
   });
 
-  robot.onSensor("servo", function(data, port) {
+  robot.onSensor("servo", function(angle, speed, port) {
     this._emitSensorData('servo' + (port + 1), {value: data});
   });
 };

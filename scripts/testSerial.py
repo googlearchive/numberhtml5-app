@@ -2,7 +2,8 @@ import serial
 import time
 import sys
 
-port = "/dev/tty.bluetooth-Jamie"
+port = "/dev/tty.bluetooth-Bailey"
+#port = "/dev/tty.bluetooth-Jamie"
 #port = "/dev/tty.nxt8"
 #port = "/dev/tty.Jamie-DevB"
 

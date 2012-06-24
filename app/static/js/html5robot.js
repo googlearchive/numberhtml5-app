@@ -18,6 +18,15 @@ HTML5Robot.prototype.addSensorListener = function(sensor, callback) {
   // sound: 0 - 180,
 };
 
+HTML5Robot.prototype.move = function(xSpeed, ySpeed) {
+  this.robot.setServoSpeed(0, xSpeed);
+  this.robot.setServoSpeed(1, ySpeed);
+}
+
+HTML5Robot.prototype.moveArm = function(speed) {
+  this.robot.setServoSpeed(2, speed);
+};
+
 /****** PRIVATE ******/
 HTML5Robot.prototype._startPollingSensors = function() {
   // Iterate through all sensor data, firing callbacks if they

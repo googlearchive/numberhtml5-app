@@ -20,8 +20,6 @@ var serial_lib=(function() {
   
   var connectionInfo;
   var readListener;
-  var dataRead;
-  var bytesToRead;
   
   var logObj=function(obj) {
     console.log(obj);
@@ -35,50 +33,27 @@ var serial_lib=(function() {
     if (!connectionInfo || !connectionInfo.connectionId) {
       throw "You must call openSerial first!";
     }
-    readListener=callback;
-    dataRead=[]; 
-    flush(onRead);
+    reader_automata.init(callback, checkDataFromSerial, logState);
+  }
+
+  var logState=function(state, readData, expectedBytes, timeRemaining) {
+    //console.log("state="+state+" readData="+readData+" expectedBytes="+expectedBytes+" timeRemaining="+timeRemaining);
+  }
+
+  var checkDataFromSerial=function(callback) {
+     if (reader_automata.isIdle()) {
+       window.webkitRequestAnimationFrame(function() { 
+        if (connectionInfo) chrome.experimental.serial.read(connectionInfo.connectionId, callback);
+       });
+     } else {
+        if (connectionInfo) chrome.experimental.serial.read(connectionInfo.connectionId, callback);
+     }
   }
 
   var flush=function(callback) {
     chrome.experimental.serial.flush(connectionInfo.connectionId, callback);
   }
 
-  var printArrayBufferView=function(abv) {
-    var str="";
-    for (var i=0; i<abv.length; i++) {
-      str+=abv[i];
-    }
-    return str;
-  }
-  var onRead=function(readInfo) {
-    if (!readListener || !connectionInfo) {
-      return;
-    }
-    if (readInfo && readInfo.bytesRead>0 && readInfo.data) {
-      var abv=new Uint8Array(readInfo.data);
-
-      for (var i=0; i<abv.length; i++) {
-        if (dataRead.length===0) {
-          bytesToRead=abv[0];
-        } else if (dataRead.length===1) {
-          bytesToRead+=abv[0]>>8;
-        } else {
-          bytesToRead--;
-        } 
-        dataRead.push(abv[0]);
-      }
-      
-      if (bytesToRead===0 && dataRead.length>2) {
-        readListener(dataRead);
-        dataRead=[];
-        bytesToRead=0;
-        return;
-      }
-    }
-    
-    chrome.experimental.serial.read(connectionInfo.connectionId, onRead);
-  }
 
   var getPorts=function(callback) {
     chrome.experimental.serial.getPorts(callback);

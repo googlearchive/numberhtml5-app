@@ -26,7 +26,6 @@ const SENSOR_REFRESH_INTERVAL=200;
   var btnForward=document.querySelector(".forward");
   var logArea=document.querySelector(".log");
   var statusLine=document.querySelector("#status");
-  var btnReadSound=document.querySelector(".readSound");
   
   var logObj=function(obj) {
     console.log(obj);
@@ -38,11 +37,12 @@ const SENSOR_REFRESH_INTERVAL=200;
     statusLine.className="error";
     statusLine.textContent=msg;
     log("<span style='color: red;'>"+msg+"</span>");
-  };
+  }
+
   var log=function(msg) {
     console.log(msg);
     logArea.innerHTML=msg+"<br/>"+logArea.innerHTML;
-  };
+  }
   
   
   var init=function() {
@@ -53,27 +53,76 @@ const SENSOR_REFRESH_INTERVAL=200;
     btnClose.addEventListener("click", closeSerial);
     btnForward.addEventListener("click", forward);
     btnStop.addEventListener("click", stop);
-    btnReadSound.addEventListener("click", readSound);
+    
+    addEventToElements('click', "input[type='radio'][name='sensor1']", function() {
+      var portType=parseInt(document.querySelector('input[type="radio"][name="sensor1"][checked="true"]').value);
+      var portMode=getBestMode(portType);
+      setInputPort(0, portType, portMode);
+    });
+
+    document.querySelector(".read1").addEventListener("click", function() { 
+      readSensor(0);
+    });
     initNXTListeners();
   }
+
+  var getBestMode=function(portType) {
+    switch (portType) {
+    case 1: return 0x20;  // switch: boolean
+    case 2: return 0xC0;  // temperature: fahrenheit
+    case 3: return 0x00;  // reflection: raw mode
+    case 4: return 0xE0;  // angle: angle steps
+    case 5: return 0x80;  // light_active: percent of full scale
+    case 6: return 0x80;  // light_inactive: percent of full scale
+    case 7: return 0x80;  // sound dB: percent of full scale
+    case 8: return 0x80;  // sound dBAudible: percent of full scale
+    default: return 0x00; // raw mode
+    }
+  }
+
+  var addEventToElements=function(eventType, selector, listener) {
+    var elems=document.querySelectorAll(selector);
+    
+    for (var i=0; i<elems.length; i++) {
+      (function() {
+        var c=i;
+        elems[i].addEventListener(eventType, function(e) {
+          listener.apply(this, [e, c]);
+        });
+      })();
+    }
+  };
+
 
   var initNXTListeners=function() {
   }
   
-  var forward=function() {
-    var cmd=[0x0c, 0x00, 0x80, 0x04, 0x00, 0x64, 0x07, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00];
+  var setMotorSpeed=function(motor, speed) {
+    var cmd=[0x0c, 0x00, 0x80, 0x04, motor, speed, 0x07, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00];
     log("writing "+cmd);
     writeSerial(cmd);
+  }
+
+  var forward=function() {
+    setMotorSpeed(0, 100);
+    setMotorSpeed(1, 100);
   }
 
   var stop=function() {
-    var cmd=[0x0c, 0x00, 0x80, 0x04, 0x00, 0x00, 0x07, 0x01, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00];
-    log("writing "+cmd);
-    writeSerial(cmd);
+    setMotorSpeed(0, 0);
+    setMotorSpeed(1, 0);
   }
 
-  var readSound=function() {
-    var cmd=[0x03, 0x00, 0x00, 0x07, 0x00];
+  var setInputPort=function(port, inputType, inputMode) {
+    serial_lib.flush(function(){
+      var cmd=[0x05, 0x00, 0x00, 0x05, port, inputType, inputMode];
+      log("writing "+cmd);
+      writeSerial(cmd);
+    });
+  }
+
+  var readSensor=function(port) {
+    var cmd=[0x03, 0x00, 0x00, 0x07, port];
     log("writing "+cmd);
     writeSerial(cmd);
   }

@@ -23,20 +23,21 @@ HTML5Robot.prototype._startPollingSensors = function() {
   // Iterate through all sensor data, firing callbacks if they
   // exist.
   //
-  robot.onSensor("sound", function(data) {
+  robot.onSensor("sound", function(data, port) {
     this._emitSensorData('sound', {value: data});
   });
 
   robot.onSensor("light", function(data) {
-    this._emitSensorData('light', {value: this._randomBetween(0, 1)});
+    this._emitSensorData('light', {value: data});
+  });
+  
+  robot.onSensor("proximity", function(data) {
+    this._emitSensorData('proximity', {value: data});
   });
 
-    this._emitSensorData('sound', {value: this._randomBetween(0, 180)});
-    this._emitSensorData('light', {value: this._randomBetween(0, 1)});
-    this._emitSensorData('proximity', {value: this._randomBetween(0, 255)});
-    this._emitSensorData('servo1', {value: this._randomBetween(-180, 180)});
-    this._emitSensorData('servo2', {value: this._randomBetween(-180, 180)});
-    this._emitSensorData('servo3', {value: this._randomBetween(-180, 180)});
+  robot.onSensor("servo", function(data, port) {
+    this._emitSensorData('servo' + (port + 1), {value: data});
+  });
 };
 
 HTML5Robot.prototype._emitSensorData = function(sensor, data) {

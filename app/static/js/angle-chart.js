@@ -3,15 +3,27 @@
   function AngleChart(options) {
     this.title = options.title;
     this.angle = 0;
+    this.lastTime;
     this._init();
   }
 
-  AngleChart.prototype.setAngle = function(angle) {
+  AngleChart.prototype.setCurrentSpeed = function(speed) {
+    // get the current angle,
+    // work out the time it was set 
+    var delta = (new Date()) - this.lastTime;
+    var rpm = 160;
+
+    var rpmilli = rpm / 60000;
+    
+    var angle = this.angle + (speed / delta);
+
     this.angle = angle;
     var transform = function(d) { return "rotate(" + angle + ")"; };
     this.sun.transition()
     .duration(500)
     .attr("transform", transform)
+
+    
   };
 
   AngleChart.prototype._init = function() {

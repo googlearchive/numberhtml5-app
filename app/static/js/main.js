@@ -1,5 +1,5 @@
 var soundChart = new TimeChart({range: [0, 180], title: 'Sound sensor'});
-var lightChart = new TimeChart({range: [0, 1], title: 'Light sensor'});
+var lightChart = new TimeChart({range: [0, 65535], title: 'Light sensor'});
 var proximityChart = new TimeChart({range: [0, 255], title: 'Proximity sensor'});
 
 var servo1Chart = new AngleChart({title: 'Servo 1'});

@@ -1,4 +1,5 @@
 {
+  "manifest_version": 2,
   "name": "Lego NXT demo - App",
   "version": "1.0",
   "permissions": [
@@ -12,6 +13,5 @@
   "icons": {
     "128": "static/img/icon_128.png"
   },
-  "manifest_version": 2,
   "offline_enabled": true
 }

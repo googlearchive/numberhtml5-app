@@ -1,8 +1,8 @@
 var reader_automata=(function() {
 
 const DEBUG=false;
-const TIMEOUT=500;   // reset state if an expected byte takes more than TIMEOUT ms to arrive
-const SKIP_ANIM_FRAMES=10;
+const TIMEOUT=2000;   // reset state if an expected byte takes more than TIMEOUT ms to arrive
+const SKIP_ANIM_FRAMES=1;
 var state='idle';
 var startTime=0;
 var readData=[];
@@ -37,38 +37,54 @@ var changeState=function(newState) {
 var read=function(data) {
   // in idle state, don't check on every frame... read buffer should be enough to handle data for a few ms
   if (!(data && data.bytesRead) && state==='idle' && counter++%SKIP_ANIM_FRAMES!==0) {
-    window.webkitRequestAnimationFrame(read);
+    window.webkitRequestAnimationFrame(function() {
+      checkForAvailableData(read);
+    });
     return;
   }
 
   var now=Date.now();
   if (state!=='idle' && now-startTime>TIMEOUT) {
+    if (DEBUG) console.log('timeout - reseting');
     resetState();
   } else if (data && data.bytesRead>0) {
     startTime=now;
     var readByte=new Uint8Array(data.data)[0];
     if (state==='idle') {
-      expectedBytes=readByte;
-      startTime=now;
-      changeState('readingSize');
+      if (readByte>64) {  // no messages should be greater than 64 bytes on bluetooth comm, so this means we lost sync
+        if (DEBUG) console.log('invalid data, byte 0='+readByte);
+        resetState();
+      } else {
+        expectedBytes=readByte;
+        startTime=now;
+        changeState('readingSize');
+      }
     } else if (state==='readingSize') {
-      expectedBytes+=readByte<<8;
-      changeState('reading');
+      if (readByte!==0) {  // no messages should be greater than 64 bytes on bluetooth comm, so this means we lost sync
+        if (DEBUG) console.log('invalid data, byte 1='+readByte);
+        resetState();
+      } else {
+        // simply ignore this byte, since it should always be 0 
+        // expectedBytes+=readByte<<8;
+        changeState('reading');
+      }
     } else if (state==='reading') {
       readData.push(readByte);
       if (readData.length===expectedBytes) {
-        var data=readData;
-        if (listener) listener(data);
+        if (DEBUG) console.log('got whole package: '+readData);
+        if (listener) listener(readData);
         resetState();
       }
     }
   } else {
     // data is null or no bytes read...
-    checkForAvailableData(read);
+    window.webkitRequestAnimationFrame(function() {
+      checkForAvailableData(read);
+    });
     return;
   }
   if (logState) logState(state, readData, expectedBytes, state==='idle'?'':(TIMEOUT-(now-startTime)));
-  window.webkitRequestAnimationFrame(read);
+  checkForAvailableData(read);
 }
 
 return {"init": init, "isIdle": function() {return state==='idle'}};

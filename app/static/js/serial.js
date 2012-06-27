@@ -41,13 +41,7 @@ var serial_lib=(function() {
   }
 
   var checkDataFromSerial=function(callback) {
-     if (reader_automata.isIdle()) {
-       window.webkitRequestAnimationFrame(function() { 
-        if (connectionInfo) chrome.experimental.serial.read(connectionInfo.connectionId, callback);
-       });
-     } else {
-        if (connectionInfo) chrome.experimental.serial.read(connectionInfo.connectionId, callback);
-     }
+    if (connectionInfo) chrome.experimental.serial.read(connectionInfo.connectionId, callback);
   }
 
   var flush=function(callback) {

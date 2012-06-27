@@ -1,5 +1,5 @@
 var soundChart = new TimeChart({range: [0, 180], title: 'Sound sensor'});
-var lightChart = new TimeChart({range: [0, 65535], title: 'Light sensor'});
+var lightChart = new TimeChart({range: [0, 1023], title: 'Light sensor'});
 var proximityChart = new TimeChart({range: [0, 255], title: 'Proximity sensor'});
 
 var servo1Chart = new AngleChart({title: 'Servo 1'});
@@ -23,13 +23,13 @@ robot.addSensorListener('proximity', function(data) {
 });
 
 robot.addSensorListener('servo1', function(data) {
-  servo1Chart.setAngle(data.value);
+  servo1Chart.setCurrentSpeed(data.value);
 });
 robot.addSensorListener('servo2', function(data) {
-  servo2Chart.setAngle(data.value);
+  servo2Chart.setCurrentSpeed(data.value);
 });
 robot.addSensorListener('servo3', function(data) {
-  servo3Chart.setAngle(data.value);
+  servo3Chart.setCurrentSpeed(data.value);
 });
 
 robot.addSensorListener('switch', function(data) {
